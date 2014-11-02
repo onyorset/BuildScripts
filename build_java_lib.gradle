@@ -1,0 +1,53 @@
+apply plugin: "java"
+
+sourceCompatibility = javaSourceCompatibility
+targetCompatibility = javaTargetCompatibility
+
+repositories {
+   mavenCentral()
+
+   // http://www.gradle.org/docs/current/userguide/userguide.pdf
+   /*
+   ivy {
+      url "http://host/ivyrepo"
+   }
+   */
+}
+
+def includeManifest = {
+   manifest {
+      attributes "Specification-Title": projectName,
+                 "Specification-Version": specVersion,
+                 "Implementation-Version": releaseVersion,
+                 "Built-By": builtByName == null || builtByName.trim().isEmpty() ? System.getProperty( "user.name" ) : builtByName,
+                 "Built-Date": new Date(),
+                 "Built-JDK": System.getProperty( "java.version" ),
+                 "Built-Gradle": gradle.gradleVersion
+   }
+}
+
+jar {
+   configure includeManifest
+   archiveName = jarName + "-" + releaseVersion + ".jar"
+}
+
+task sourcesJar( type:  Jar ) {
+   classifier "sources"
+   from sourceSets.main.allSource
+
+   configure includeManifest
+   archiveName = jarName + "-sources-" + releaseVersion + ".jar"
+}
+
+task javadocJar( type: Jar ) {
+   classifier = "javadoc"
+   from javadoc.outputs.files
+
+   configure includeManifest
+   archiveName = jarName + "-javadoc-" + releaseVersion + ".jar"
+}
+
+artifacts {
+   archives sourcesJar
+   archives javadocJar
+}
