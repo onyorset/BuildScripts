@@ -1,4 +1,5 @@
 apply plugin: "java"
+apply plugin: "findbugs"
 
 sourceCompatibility = javaSourceCompatibility
 targetCompatibility = javaTargetCompatibility
@@ -27,6 +28,8 @@ def includeManifest = {
 }
 
 jar {
+   dependsOn "findbugsMain"
+
    configure includeManifest
    archiveName = jarName + "-" + releaseVersion + ".jar"
 }
@@ -45,6 +48,12 @@ task javadocJar( type: Jar ) {
 
    configure includeManifest
    archiveName = jarName + "-javadoc-" + releaseVersion + ".jar"
+}
+
+task jars {
+   dependsOn "jar"
+   dependsOn "sourcesJar"
+   dependsOn "javadocJar"
 }
 
 artifacts {
