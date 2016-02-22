@@ -29,6 +29,7 @@ def includeManifest = {
 
 jar {
    dependsOn "findbugsMain"
+   dependsOn "test"
 
    configure includeManifest
    archiveName = jarName + "-" + releaseVersion + ".jar"
