@@ -52,6 +52,7 @@ task javadocJar( type: Jar ) {
 }
 
 task jars {
+   dependsOn "clean"
    dependsOn "jar"
    dependsOn "sourcesJar"
    dependsOn "javadocJar"
