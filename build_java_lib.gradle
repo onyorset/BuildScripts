@@ -15,6 +15,13 @@ repositories {
    */
 }
 
+tasks.withType( FindBugs ) {
+   reports {
+      xml.enabled false
+      html.enabled true
+   }
+}
+
 def includeManifest = {
    manifest {
       attributes "Specification-Title": projectName,
