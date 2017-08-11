@@ -50,9 +50,9 @@ task sourcesJar( type:  Jar ) {
    archiveName = jarName + "-sources-" + releaseVersion + ".jar"
 }
 
-task javadocJar( type: Jar ) {
+task javadocJar( type: Jar, dependsOn: javadoc ) {
    classifier = "javadoc"
-   from javadoc.outputs.files
+   from javadoc.destinationDir
 
    configure includeManifest
    archiveName = jarName + "-javadoc-" + releaseVersion + ".jar"
