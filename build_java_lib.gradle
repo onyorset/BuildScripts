@@ -1,25 +1,10 @@
 apply plugin: "java"
-apply plugin: "findbugs"
 
 sourceCompatibility = javaSourceCompatibility
 targetCompatibility = javaTargetCompatibility
 
 repositories {
    mavenCentral()
-
-   // http://www.gradle.org/docs/current/userguide/userguide.pdf
-   /*
-   ivy {
-      url "http://host/ivyrepo"
-   }
-   */
-}
-
-tasks.withType( FindBugs ) {
-   reports {
-      xml.enabled false
-      html.enabled true
-   }
 }
 
 def includeManifest = {
@@ -35,7 +20,6 @@ def includeManifest = {
 }
 
 jar {
-   dependsOn "findbugsMain"
    dependsOn "test"
 
    configure includeManifest
