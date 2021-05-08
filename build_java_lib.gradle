@@ -1,59 +1,61 @@
 apply plugin: "java"
+apply plugin: "eclipse"
+apply plugin: "maven-publish"
 
 sourceCompatibility = javaSourceCompatibility
 targetCompatibility = javaTargetCompatibility
 
+buildscript {
+   repositories {
+      mavenLocal()
+      mavenCentral()
+   }
+}
+
 repositories {
+   mavenLocal()
    mavenCentral()
 }
 
 def includeManifest = {
    manifest {
-      attributes "Specification-Title": projectName,
-                 "Specification-Version": specVersion,
-                 "Implementation-Version": releaseVersion,
-                 "Built-By": builtByName == null || builtByName.trim().isEmpty() ? System.getProperty( "user.name" ) : builtByName,
+      attributes "Specification-Title": rootProject.name,
+                 "Specification-Vendor": builtBy == null || builtBy.trim().isEmpty() ? System.getProperty( "user.name" ) : builtBy,
+                 "Implementation-Version": version,
+                 "Implementation-Vendor": builtBy == null || builtBy.trim().isEmpty() ? System.getProperty( "user.name" ) : builtBy,
                  "Built-Date": new Date(),
                  "Built-JDK": System.getProperty( "java.version" ),
+                 "Target-JDK": targetCompatibility,
                  "Built-Gradle": gradle.gradleVersion
    }
 }
 
+java {
+   withSourcesJar()
+   withJavadocJar()
+}
+
 jar {
-   dependsOn "test"
-
    configure includeManifest
-   archiveName = jarName + "-" + releaseVersion + ".jar"
 }
 
-javadoc {
-   options.addBooleanOption( "html5", true )
-}
-
-task sourcesJar( type:  Jar ) {
-   classifier "sources"
-   from sourceSets.main.allSource
-
+sourcesJar {
    configure includeManifest
-   archiveName = jarName + "-sources-" + releaseVersion + ".jar"
 }
 
-task javadocJar( type: Jar, dependsOn: javadoc ) {
-   classifier = "javadoc"
-   from javadoc.destinationDir
-
+javadocJar {
    configure includeManifest
-   archiveName = jarName + "-javadoc-" + releaseVersion + ".jar"
 }
 
-task jars {
-   dependsOn "clean"
-   dependsOn "jar"
-   dependsOn "sourcesJar"
-   dependsOn "javadocJar"
+javadoc.options.addStringOption( "Xdoclint:none", "-quiet" )
+
+publishing {
+   publications {
+      mavenJava( MavenPublication ) {
+         from project.components.java
+         artifacts = [ jar, javadocJar, sourcesJar ]
+      }
+   }
 }
 
-artifacts {
-   archives sourcesJar
-   archives javadocJar
-}
+compileJava.dependsOn clean
