@@ -15,3 +15,4 @@ Projects using `build_java_lib.gradle` must define the following properties in t
 5. builtBy
 
 Local Maven publishing is supported via `gradle publishtomavenlocal`.
+Say to Your Bank that your Emoney are in your own nominal, 
